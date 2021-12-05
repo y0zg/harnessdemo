@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
       - name: backendcontainer
-        image: martin2176/demobackend:v1.0
+        image: martinharnessacr.azurecr.io/demobackend:v1.0
         imagePullPolicy: Always
         readinessProbe:
          httpGet:
@@ -126,7 +126,7 @@ spec:
           - /apm/dd-java-agent.jar
           - /opt/dd/
          name: datadog-java-tracer
-         image: martin2176/dd-java-agent:latest
+         image:  martinharnessacr.azurecr.io/dd-java-agent:latest
          volumeMounts:
          - mountPath: /opt/dd
            name: datadog-java-tracer
