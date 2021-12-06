@@ -43,7 +43,7 @@ spec:
          httpGet:
           path: /actuator/health
           port: 8080
-         initialDelaySeconds: 180
+         initialDelaySeconds: 300
          timeoutSeconds: 2
          periodSeconds: 10
          failureThreshold: 3   
@@ -101,10 +101,10 @@ spec:
         resources:
           requests:
             memory: "250Mi"
-            cpu: "200m"
+            cpu: "250m"
           limits:
             memory: "500Mi"
-            cpu: "400m"
+            cpu: "500m"
         volumeMounts:
         - mountPath: /opt/dd
           name: datadog-java-tracer

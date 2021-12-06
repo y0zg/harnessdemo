@@ -106,12 +106,14 @@ spec:
            value: "B3,Datadog"
          - name: DD_SERVICE_MAPPING
            value: mysql:martinsmysqldb
+         - name: DD_TRACE_METHODS
+           value: "[*]"   
         ports:
         - containerPort: 8081
         resources:
           requests:
             memory: "250Mi"
-            cpu: "200m"
+            cpu: "300m"
           limits:
             memory: "500Mi"
             cpu: "600m"
