@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: domainarchitecture
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 443
+      name: https_port443
+      protocol: HTTPS
+    hosts:
+    - "api.domainarchitecture.ferguson.tk"
+    tls:
+     credentialName: api-domainarchitecture-ferguson-tk-credential
+     mode: MUTUAL

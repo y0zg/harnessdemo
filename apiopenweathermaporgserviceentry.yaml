@@ -1,0 +1,19 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: apiopenweathermaporg
+spec:
+  hosts:
+  - "api.openweathermap.org"
+  ports:
+  - number: 80
+    name: http-port80
+    protocol: HTTP
+    targetPort: 443
+  - number: 443
+    name: https-port443
+    protocol: HTTPS
+  location: MESH_EXTERNAL
+  resolution: DNS
+---

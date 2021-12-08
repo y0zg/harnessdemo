@@ -1,0 +1,20 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: martindddemomysqldatabase
+spec:
+  hosts:
+  - martindddemo.mysql.database.azure.com
+#  addresses:
+#  - 52.154.246.152
+  ports:
+  - number: 3306
+    name: tcp-port3306
+    protocol: TCP
+    targetPort: 3306
+  location: MESH_EXTERNAL
+  resolution: DNS
+#  endpoints:
+#  - address: 151.101.185.67
+---

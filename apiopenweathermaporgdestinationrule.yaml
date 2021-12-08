@@ -1,0 +1,14 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: apiopenweathermaporg
+spec:
+  host: api.openweathermap.org
+  trafficPolicy:
+   portLevelSettings:
+   - port:
+      number: 80
+     tls:
+       mode: SIMPLE
+---

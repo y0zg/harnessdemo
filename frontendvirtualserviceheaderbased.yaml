@@ -1,0 +1,35 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: frontend
+spec:
+  hosts:
+  - "api.domainarchitecture.ferguson.tk"
+  gateways:
+  - domainarchitecture
+  http:
+  - match:
+    - uri:
+       prefix: /weather
+      headers:
+       branch:
+        exact: waterworks
+    rewrite:
+     uri: /weather  
+    route:
+     - destination:
+        host: frontend.demoapp.svc.cluster.local
+        subset: v10
+        port:
+         number: 8080
+  - match:
+    - uri:
+       prefix: /weather
+    rewrite:
+     uri: /weather
+    route:
+     - destination:
+        host: frontend.demoapp.svc.cluster.local
+        subset: v11
+        port:
+         number: 8080           
