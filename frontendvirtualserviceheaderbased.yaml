@@ -10,7 +10,7 @@ spec:
   http:
   - match:
     - uri:
-       prefix: /weather
+       prefix: /v1.0/weather
       headers:
        branch:
         exact: waterworks
