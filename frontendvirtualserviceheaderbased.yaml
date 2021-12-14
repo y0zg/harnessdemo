@@ -19,7 +19,7 @@ spec:
     route:
      - destination:
         host: frontend.demoapp.svc.cluster.local
-        subset: v10
+        subset: v11
         port:
          number: 8080
   - match:

@@ -1,0 +1,128 @@
+apiVersion: apps/v1
+#To test curl http://frontend.demoapp.svc.cluster.local:8080/weather
+kind: Deployment
+metadata:
+  name: frontend-v1.1
+  labels:
+    app: frontend
+    serviceteam: domainarchitecture
+    env: dev
+    service: frontend
+    version: v1.1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+     app: frontend
+     serviceteam: domainarchitecture
+     env: dev
+     service: frontend
+     version: v1.1
+  template:
+    metadata:
+      annotations:
+       traffic.sidecar.istio.io/excludeOutboundPorts: "8125,8126"    
+      labels:
+       app: frontend
+       serviceteam: domainarchitecture
+       env: dev
+       service: frontend
+       version: v1.1
+    spec:
+      containers:
+      - name: frontendcontainer
+        image: martinharnessacr.azurecr.io/demofrontend:v1.1
+        imagePullPolicy: Always
+        readinessProbe:
+         httpGet:
+          path: /actuator/health
+          port: 8080
+         initialDelaySeconds: 120
+         timeoutSeconds: 2
+         periodSeconds: 10
+         failureThreshold: 1
+        livenessProbe:
+         httpGet:
+          path: /actuator/health
+          port: 8080
+         initialDelaySeconds: 300
+         timeoutSeconds: 2
+         periodSeconds: 10
+         failureThreshold: 3   
+        command: ["java"]
+        args: ["-javaagent:/opt/dd/dd-java-agent.jar", "-jar", "/opt/app/frontend-v1.1.jar"]
+        env:
+         - name: DD_ENV
+           valueFrom:
+            fieldRef:
+             fieldPath: metadata.labels['env']
+         - name: DD_SERVICE
+           valueFrom:
+            fieldRef:
+             fieldPath: metadata.labels['service']
+         - name: DD_VERSION
+           valueFrom:
+            fieldRef:
+             fieldPath: metadata.labels['version']
+         - name: DD_ENTITY_ID
+           valueFrom:
+            fieldRef:
+             fieldPath: metadata.uid
+         - name: DD_SERVICETEAM
+           valueFrom:
+            fieldRef:
+             fieldPath: metadata.labels['serviceteam']
+         - name: DD_APP
+           valueFrom:
+            fieldRef:
+             fieldPath: metadata.labels['app']             
+         - name: DD_TAGS
+           value: "serviceteam:$(DD_SERVICETEAM) app:$(DD_APP)"
+         - name: DD_HTTP_CLIENT_TAG_QUERY_STRING
+           value: "true"
+         - name: DD_HTTP_SERVER_TAG_QUERY_STRING
+           value: "true"
+         - name: DD_AGENT_HOST
+           valueFrom:
+            fieldRef:
+             fieldPath: status.hostIP
+         - name: DD_LOGS_INJECTION
+           value: "true"
+         - name: DD_PROFILING_ENABLED
+           value: "true"
+         - name: DD_TRACE_SAMPLE_RATE
+           value: "1"
+         - name: DD_TRACE_ENABLED
+           value: "true"
+         - name: DD_PROPAGATION_STYLE_INJECT
+           value: "B3,Datadog"
+         - name: DD_PROPAGATION_STYLE_EXTRACT
+           value: "B3,Datadog"
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "250Mi"
+            cpu: "250m"
+          limits:
+            memory: "500Mi"
+            cpu: "500m"
+        volumeMounts:
+        - mountPath: /opt/dd
+          name: datadog-java-tracer
+      initContainers:
+       - 
+         command:
+          - cp
+          - -r
+          - /apm/dd-java-agent.jar
+          - /opt/dd/
+         name: datadog-java-tracer
+         image: martinharnessacr.azurecr.io/dd-java-agent:latest
+         volumeMounts:
+         - mountPath: /opt/dd
+           name: datadog-java-tracer
+      volumes:
+      - name: datadog-java-tracer
+        emptyDir: {}       
+---

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 #To test curl http://frontend.demoapp.svc.cluster.local:8080/weather
 kind: Deployment
 metadata:
-  name: frontend
+  name: frontend-v1.0
   labels:
     app: frontend
     serviceteam: domainarchitecture
